@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using PKHeX.Core;
 
 namespace PKHeXPluginExample
@@ -11,33 +12,49 @@ namespace PKHeXPluginExample
 
         public void Initialize(params object[] args)
         {
+            Console.WriteLine($"Loading {Name}...");
             if (args == null)
                 return;
-            if (args.Length > 0)
-                SaveFileEditor = (ISaveFileProvider)args[0];
-            if (args.Length > 1)
-                PKMEditor = (IPKMView)args[1];
-            if (args.Length > 2)
-                LoadMenuStrip((ToolStrip)args[2]);
+            SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider);
+            PKMEditor = (IPKMView)Array.Find(args, z => z is IPKMView);
+            var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip);
+            LoadMenuStrip(menu);
         }
 
-        private static void LoadMenuStrip(ToolStrip menuStrip)
+        private void LoadMenuStrip(ToolStrip menuStrip)
         {
             var items = menuStrip.Items;
             var tools = items.Find("Menu_Tools", false)[0] as ToolStripDropDownItem;
             AddPluginControl(tools);
         }
 
-        private static void AddPluginControl(ToolStripDropDownItem tools)
+        private void AddPluginControl(ToolStripDropDownItem tools)
         {
-            var ctrl = new ToolStripMenuItem("ExamplePlugin");
-            ctrl.Click += (s, e) => MessageBox.Show("Hello!");
+            var ctrl = new ToolStripMenuItem(Name);
             tools.DropDownItems.Add(ctrl);
+
+            var c2 = new ToolStripMenuItem($"{Name} sub form");
+            c2.Click += (s, e) => new Form().ShowDialog();
+            var c3 = new ToolStripMenuItem($"{Name} show message");
+            c3.Click += (s, e) => MessageBox.Show("Hello!");
+            var c4 = new ToolStripMenuItem($"{Name} modify savefile");
+            c4.Click += (s, e) => ModifySaveFile();
+            ctrl.DropDownItems.Add(c2);
+            ctrl.DropDownItems.Add(c3);
+            ctrl.DropDownItems.Add(c4);
+            Console.WriteLine($"{Name} added menu items.");
+        }
+
+        private void ModifySaveFile()
+        {
+            // Make everything Bulbasaur!
+            SaveFileEditor.SAV.ModifyBoxes(pk => pk.Species = 1);
+            SaveFileEditor.ReloadSlots();
         }
 
         public void NotifySaveLoaded()
         {
-            MessageBox.Show("Plugin notified that a Save File was just loaded.");
+            Console.WriteLine($"{Name} was notified that a Save File was just loaded.");
         }
     }
 }
