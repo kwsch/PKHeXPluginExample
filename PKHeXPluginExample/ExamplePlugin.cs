@@ -7,6 +7,7 @@ namespace PKHeXPluginExample
     public class ExamplePlugin : IPlugin
     {
         public string Name => nameof(ExamplePlugin);
+        public int Priority => 1; // Loading order, lowest is first.
         public ISaveFileProvider SaveFileEditor { get; private set; }
         public IPKMView PKMEditor { get; private set; }
 
