@@ -38,7 +38,7 @@ namespace PKHeXPluginExample
             c2.Click += (s, e) => new Form().ShowDialog();
             var c3 = new ToolStripMenuItem($"{Name} show message");
             c3.Click += (s, e) => MessageBox.Show("Hello!");
-            var c4 = new ToolStripMenuItem($"{Name} modify savefile");
+            var c4 = new ToolStripMenuItem($"{Name} modify current SaveFile");
             c4.Click += (s, e) => ModifySaveFile();
             ctrl.DropDownItems.Add(c2);
             ctrl.DropDownItems.Add(c3);
@@ -48,15 +48,25 @@ namespace PKHeXPluginExample
 
         private void ModifySaveFile()
         {
-            // Make everything Bulbasaur!
-            SaveFileEditor.SAV.ModifyBoxes(pk => pk.Species = 1);
+            var sav = SaveFileEditor.SAV;
+            sav.ModifyBoxes(ModifyPKM);
             SaveFileEditor.ReloadSlots();
+        }
+
+        public static void ModifyPKM(PKM pkm)
+        {
+            // Make everything Bulbasaur!
+            pkm.Species = (int)Species.Bulbasaur;
+            pkm.Move1 = 1; // pound
+            pkm.Move1_PP = 40;
+            CommonEdits.SetShiny(pkm);
         }
 
         public void NotifySaveLoaded()
         {
             Console.WriteLine($"{Name} was notified that a Save File was just loaded.");
         }
+
         public bool TryLoadFile(string filePath)
         {
             Console.WriteLine($"{Name} was provided with the file path, but chose to do nothing with it.");
