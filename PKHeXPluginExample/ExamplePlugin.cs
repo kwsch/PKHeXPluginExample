@@ -8,14 +8,14 @@ namespace PKHeXPluginExample
     {
         public string Name => nameof(ExamplePlugin);
         public int Priority => 1; // Loading order, lowest is first.
-        public ISaveFileProvider SaveFileEditor { get; private set; }
-        public IPKMView PKMEditor { get; private set; }
+
+        // Initialized on plugin load
+        public ISaveFileProvider SaveFileEditor { get; private set; } = null!;
+        public IPKMView PKMEditor { get; private set; } = null!;
 
         public void Initialize(params object[] args)
         {
             Console.WriteLine($"Loading {Name}...");
-            if (args == null)
-                return;
             SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider);
             PKMEditor = (IPKMView)Array.Find(args, z => z is IPKMView);
             var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip);
@@ -25,7 +25,8 @@ namespace PKHeXPluginExample
         private void LoadMenuStrip(ToolStrip menuStrip)
         {
             var items = menuStrip.Items;
-            var tools = items.Find("Menu_Tools", false)[0] as ToolStripDropDownItem;
+            if (!(items.Find("Menu_Tools", false)[0] is ToolStripDropDownItem tools))
+                throw new ArgumentException(nameof(menuStrip));
             AddPluginControl(tools);
         }
 
