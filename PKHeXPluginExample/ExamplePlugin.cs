@@ -16,9 +16,9 @@ namespace PKHeXPluginExample
         public void Initialize(params object[] args)
         {
             Console.WriteLine($"Loading {Name}...");
-            SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider);
-            PKMEditor = (IPKMView)Array.Find(args, z => z is IPKMView);
-            var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip);
+            SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider)!;
+            PKMEditor = (IPKMView)Array.Find(args, z => z is IPKMView)!;
+            var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip)!;
             LoadMenuStrip(menu);
         }
 

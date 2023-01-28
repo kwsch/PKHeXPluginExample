@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <LangVersion>8</LangVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-    <PackageReference Include="PKHeX.Core" Version="20.10.10" />
+    <PackageReference Include="PKHeX.Core" Version="23.1.26" />
   </ItemGroup>
 
 </Project>
